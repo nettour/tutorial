@@ -11,7 +11,8 @@ exports.userCreateGet = (req, res)=>{
     res.render('createUser', {title: 'Create User'})
 }
 
-//validation
+
+//new user form & validation
 const {body, validationResult} = require('express-validator')
 
 const alphaErr = 'must only contain letters'
@@ -32,7 +33,7 @@ exports.userCreatePost = [
     (req, res) => {
 
         const errors = validationResult(req)
-        
+
         if(!errors.isEmpty()){
             return res.status(400).render('createUser', {
                 title: "Create User",
@@ -44,4 +45,32 @@ exports.userCreatePost = [
         userStorage.addUser({firstName, lastName})
         res.redirect('/')   
     }
+]
+
+//user update
+
+exports.userUpdateGet = (req, res)=>{
+    const user = userStorage.getUser(req.params.id)
+    res.render('updateUser', {
+        title: "Update User",
+        user: user
+    })
+}
+
+exports.userUpdatePost = [
+validateUser,
+(req, res)=> {
+    const user = userStorage.getUser(req.params.id)
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).render('updateUser', {
+            title: "Update User",
+            errors: errors.array()
+        })
+    }
+
+    const {firstName, lastName} = req.body
+    userStorage.updateUser(user.id, {firstName, lastName})
+    res.redirect('/')
+}
 ]
