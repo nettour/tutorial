@@ -14,8 +14,8 @@ exports.userCreateGet = (req, res)=>{
 //validation
 const {body, validationResult} = require('express-validator')
 
-const alphaErr = 'must only contain letter'
-const lengthErr = 'must be between 0 and 10 charachters'
+const alphaErr = 'must only contain letters'
+const lengthErr = 'must be between 1 and 10 charachters'
 
 const validateUser = [
     body('firstName').trim()
@@ -29,15 +29,17 @@ const validateUser = [
 
 exports.userCreatePost = [
     validateUser,
-    (res, req) => {
+    (req, res) => {
+
         const errors = validationResult(req)
+        
         if(!errors.isEmpty()){
             return res.status(400).render('createUser', {
                 title: "Create User",
-                erros: errors.array()
+                errors: errors.array()
             })
         }
-        
+
         const {firstName, lastName} = req.body
         userStorage.addUser({firstName, lastName})
         res.redirect('/')   
