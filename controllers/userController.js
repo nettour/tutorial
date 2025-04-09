@@ -74,3 +74,9 @@ validateUser,
     res.redirect('/')
 }
 ]
+
+exports.userDeletePost = (req, res)=>{
+    const userId = req.params.id
+    userStorage.deleteUser(userId)
+    res.redirect('/')
+}
